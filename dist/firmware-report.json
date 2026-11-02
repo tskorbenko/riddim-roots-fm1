@@ -1,8 +1,8 @@
 {
     "passed":  true,
-    "elf_sha256":  "90763af732a74bea64c1dcbc3118cb782c19532f198ac4caa55a98fe70286ac7",
-    "allocated_image_bytes":  443100,
-    "app_image_bytes":  443048,
+    "elf_sha256":  "517dd1e9ce6acd9ad9613925da8efa85e706cb93bfb1070de63de0852fc51229",
+    "allocated_image_bytes":  443260,
+    "app_image_bytes":  443208,
     "startup_entry_verified":  true,
     "startup_entry":  33554720,
     "instrument_ready":  true,
@@ -11,7 +11,7 @@
                      {
                          "name":  ".text",
                          "address":  33554720,
-                         "bytes":  359072,
+                         "bytes":  359232,
                          "nobits":  false
                      },
                      {

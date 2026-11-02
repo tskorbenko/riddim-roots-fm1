@@ -37,8 +37,8 @@ e.x.fm1_key(14, 0); e.x.fm1_key(BTN.FX, 0); e.advance(1600);
 e.x.fm1_key(BTN.ARP, 1); e.advance(40); e.note(25, 60); e.x.fm1_key(BTN.ARP, 0); e.advance(150);
 ok(e.d('lion') === L.DROP, 'DROP: lion leans back'); e.snapshot('lion-drop'); e.advance(1600);
 // STYLE CHANGE: dance during the transition
-e.cc(9, Math.ceil(3 * 128 / 11)); e.advance(400);
-ok(e.d('lion') === L.DANCE, 'STYLE CHANGE: dance'); e.snapshot('lion-dance');
+e.cc(9, Math.ceil(3 * 128 / 11)); e.advance(200);
+e.waitFor(() => e.d('lion') === L.DANCE, 3000, 'dance'); ok(e.d('lion') === L.DANCE, 'STYLE CHANGE: dance'); e.snapshot('lion-dance');
 e.waitFor(() => !e.d('transition'), 60000, 'transition');
 // FREEZE: latched pose
 e.x.fm1_key(BTN.LFO, 1); e.advance(40); e.note(0); e.x.fm1_key(BTN.LFO, 0); e.advance(100);

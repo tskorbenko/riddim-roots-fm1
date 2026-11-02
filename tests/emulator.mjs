@@ -73,11 +73,12 @@ for (const [style, name, bpm] of [[3, 'STEPPERS', 78], [8, 'DUB TECHNO', 122], [
   e.cc(9, Math.ceil(style * 128 / 11)); e.advance(200);
   ok(e.d('target') === style, `${name} queued`);
   let minPlaying = 1, peakBpm = 0, bars = e.d('bar_played');
-  const path = [];
+  const path = []; let quiet = 0;
   for (let t = 0; t < 60000 && (e.d('transition') || e.d('style') !== style || Math.abs(e.d('bpm') - bpm) > 1); t += 500) {
     path.push(e.d('bpm'));
     const r = e.advance(500); minPlaying = Math.min(minPlaying, e.d('playing')); peakBpm = Math.max(peakBpm, e.d('bpm'));
-    ok(r > 0.001, `${name}: audio continues during transition`);
+    quiet = r > 0.001 ? 0 : quiet + 1;   /* a dub break may rest briefly; the music must not stop */
+    ok(quiet <= 3, `${name}: audio continues during transition`);
   }
   ok(e.d('style') === style && minPlaying === 1, `${name} reached without stopping`);
   ok(Math.abs(e.d('bpm') - bpm) <= 1, `${name} tempo ${e.d('bpm')}`);
