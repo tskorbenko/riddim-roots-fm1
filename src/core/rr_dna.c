@@ -4,7 +4,7 @@
  * longer fits is marked for regeneration instead of being truncated. */
 #include "rr_core.h"
 
-uint16_t rr_crc16(const uint8_t *p, unsigned n)
+RR_SMALL uint16_t rr_crc16(const uint8_t *p, unsigned n)
 {
     uint16_t c = 0xffff;
     while (n--) {
@@ -21,14 +21,14 @@ static uint32_t get32(struct io *r) { uint32_t v = 0; for (unsigned i = 0; i < 4
 static const uint16_t drum_lanes[] = {DK_BD, DK_SD, DK_RS, DK_CH, DK_OH, DK_CP, DK_HT, DK_MT, DK_LT, DK_CB, DK_CY};
 enum { LANES = sizeof drum_lanes / sizeof drum_lanes[0], VERSION = 1 };
 
-static unsigned comp_size(const struct rr_motif *m, unsigned c)
+RR_SMALL static unsigned comp_size(const struct rr_motif *m, unsigned c)
 {
     unsigned n = 4;
     if (c == RC_DRUMS || c == RC_PERC) return n + 2 + 4 * LANES;
     for (unsigned i = 0; i < RR_MOTIF; ++i) if (m->hit[i]) n += 3;
     return n + 1;
 }
-static void write_comp(struct io *w, const struct rr_motif *m, unsigned c)
+RR_SMALL static void write_comp(struct io *w, const struct rr_motif *m, unsigned c)
 {
     put8(w, m->style); put8(w, m->variant); put8(w, m->octave); put8(w, m->voicing);
     if (c == RC_DRUMS || c == RC_PERC) {
@@ -51,7 +51,7 @@ static void write_comp(struct io *w, const struct rr_motif *m, unsigned c)
         put8(w, m->len[i] > 15 ? 15 : m->len[i]);
     }
 }
-static int read_comp(struct io *r, struct rr_motif *m, unsigned c)
+RR_SMALL static int read_comp(struct io *r, struct rr_motif *m, unsigned c)
 {
     memset(m, 0, sizeof *m);
     m->style = (uint8_t)get8(r); m->variant = (uint8_t)get8(r); m->octave = (uint8_t)get8(r); m->voicing = (uint8_t)get8(r);
@@ -79,7 +79,7 @@ static int read_comp(struct io *r, struct rr_motif *m, unsigned c)
     }
     return r->ok;
 }
-unsigned rr_dna_pack(const struct rr_engine *e, const struct rr_mix *mix, unsigned bpm, uint8_t out[RR_DNA_BYTES])
+RR_SMALL unsigned rr_dna_pack(const struct rr_engine *e, const struct rr_mix *mix, unsigned bpm, uint8_t out[RR_DNA_BYTES])
 {
     struct io w = {out, 0, RR_DNA_BYTES - 2, 1};
     static const uint8_t order[RR_MOTIF_COMPS] = {RC_BASS, RC_DRUMS, RC_SKANK, RC_ORGAN, RC_PIANO, RC_HORNS, RC_PERC, RC_FX};
@@ -105,7 +105,7 @@ unsigned rr_dna_pack(const struct rr_engine *e, const struct rr_mix *mix, unsign
     out[RR_DNA_BYTES - 2] = (uint8_t)crc; out[RR_DNA_BYTES - 1] = (uint8_t)(crc >> 8);
     return w.ok ? w.at : 0;
 }
-int rr_dna_unpack(struct rr_engine *e, struct rr_mix *mix, unsigned *bpm, const uint8_t in[RR_DNA_BYTES])
+RR_SMALL int rr_dna_unpack(struct rr_engine *e, struct rr_mix *mix, unsigned *bpm, const uint8_t in[RR_DNA_BYTES])
 {
     uint16_t crc = (uint16_t)(in[RR_DNA_BYTES - 2] | in[RR_DNA_BYTES - 1] << 8);
     if (rr_crc16(in, RR_DNA_BYTES - 2) != crc) return -1;

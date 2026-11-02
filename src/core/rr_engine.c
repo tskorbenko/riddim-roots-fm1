@@ -23,7 +23,7 @@ const uint8_t rr_chord_table[RR_CHORDS][8] = {
 static const uint8_t scales[4][7] = {
     {0, 2, 3, 5, 7, 8, 10}, {0, 2, 4, 5, 7, 9, 11}, {0, 2, 3, 5, 7, 9, 10}, {0, 2, 4, 5, 7, 9, 10}
 };
-unsigned rr_scale_note(unsigned key, unsigned mode, unsigned chord_root, int degree)
+RR_SMALL unsigned rr_scale_note(unsigned key, unsigned mode, unsigned chord_root, int degree)
 {
     int d = (int)chord_root + degree, oct = 0;
     while (d < 0) { d += 7; --oct; }
@@ -102,22 +102,22 @@ static const uint8_t prog_tpl[][RR_PHRASE] = {
 static const uint8_t prog_family[] = {1, 2, 2, 2, 4, 4, 8, 8, 16, 16, 32, 64};
 
 /* ---------------- motif builders ---------------- */
-static int degree_of(char c)
+RR_SMALL static int degree_of(char c)
 {
     if (c >= '1' && c <= '9') return c - '1';
     return c == 'b' ? -1 : c == 'a' ? -2 : c == 'l' ? -3 : 99;
 }
-static unsigned accent_vel(unsigned i, uint32_t *r, unsigned base)
+RR_SMALL static unsigned accent_vel(unsigned i, uint32_t *r, unsigned base)
 {
     unsigned v = base + (i % 8 == 0 ? 18 : i % 4 == 0 ? 10 : i % 2 == 0 ? 0 : -8);
     return (unsigned)rr_clamp((int)v + (int)rr_range(r, 7) - 3, 20, 127);
 }
-static void motif_clear(struct rr_motif *m, unsigned style)
+RR_SMALL static void motif_clear(struct rr_motif *m, unsigned style)
 {
     memset(m, 0, sizeof *m);
     m->style = (uint8_t)style;
 }
-static void build_line(struct rr_motif *m, const char *t, unsigned n, uint32_t *r, unsigned base_vel)
+RR_SMALL static void build_line(struct rr_motif *m, const char *t, unsigned n, uint32_t *r, unsigned base_vel)
 {
     for (unsigned i = 0; i < RR_MOTIF; ++i) {
         char c = t[i % n];
@@ -131,7 +131,7 @@ static void build_line(struct rr_motif *m, const char *t, unsigned n, uint32_t *
         m->vel[i] = (uint8_t)accent_vel(i, r, base_vel);
     }
 }
-static void build_chords(struct rr_motif *m, const char *t, uint32_t *r, unsigned base_vel)
+RR_SMALL static void build_chords(struct rr_motif *m, const char *t, uint32_t *r, unsigned base_vel)
 {
     for (unsigned i = 0; i < RR_MOTIF; ++i) {
         char c = t[i % 16];
@@ -145,7 +145,7 @@ static void build_chords(struct rr_motif *m, const char *t, uint32_t *r, unsigne
         m->vel[i] = (uint8_t)(c == 'm' ? 52 + rr_range(r, 10) : accent_vel(i, r, base_vel));
     }
 }
-static void build_drums(struct rr_motif *m, unsigned style, unsigned variant, unsigned energy, uint32_t *r)
+RR_SMALL static void build_drums(struct rr_motif *m, unsigned style, unsigned variant, unsigned energy, uint32_t *r)
 {
     const uint16_t *d = drum_tpl[style][variant & 1];
     static const uint16_t lanes[6] = {DK_BD, DK_SD, DK_RS, DK_CH, DK_OH, DK_CP};
@@ -162,7 +162,7 @@ static void build_drums(struct rr_motif *m, unsigned style, unsigned variant, un
     }
     m->variant = (uint8_t)variant;
 }
-static void build_perc(struct rr_motif *m, unsigned style, unsigned energy, uint32_t *r)
+RR_SMALL static void build_perc(struct rr_motif *m, unsigned style, unsigned energy, uint32_t *r)
 {
     /* Hand percussion: shaker (CP lane voiced as maracas), congas, cowbell, clave. */
     static const uint16_t conga[4][2] = {{0x8840, 0x2080}, {0x0880, 0xa080}, {0x4404, 0x1040}, {0x0220, 0x8808}};
@@ -181,7 +181,7 @@ static void build_perc(struct rr_motif *m, unsigned style, unsigned energy, uint
 }
 /* Embellish a melodic motif: change some pitches to chord tones/neighbours,
  * occasionally add or drop onsets. amount 0..100. */
-static void vary_line(struct rr_motif *m, uint32_t *r, unsigned amount, int allow_rhythm)
+RR_SMALL static void vary_line(struct rr_motif *m, uint32_t *r, unsigned amount, int allow_rhythm)
 {
     static const int8_t tones[] = {0, 2, 4, 7, 4, 0, -3, 6, 1, 5};
     unsigned changes = 1 + amount / 18;
@@ -203,7 +203,7 @@ static void vary_line(struct rr_motif *m, uint32_t *r, unsigned amount, int allo
         }
     }
 }
-static void vary_drums(struct rr_motif *m, uint32_t *r, unsigned amount, unsigned style)
+RR_SMALL static void vary_drums(struct rr_motif *m, uint32_t *r, unsigned amount, unsigned style)
 {
     unsigned changes = 1 + amount / 15;
     for (unsigned k = 0; k < changes; ++k) {
@@ -221,7 +221,7 @@ static void vary_drums(struct rr_motif *m, uint32_t *r, unsigned amount, unsigne
         if (!m->hit[i]) m->vel[i] = 0;
     }
 }
-static void vary_chords(struct rr_motif *m, uint32_t *r, unsigned amount)
+RR_SMALL static void vary_chords(struct rr_motif *m, uint32_t *r, unsigned amount)
 {
     unsigned changes = 1 + amount / 25;
     for (unsigned k = 0; k < changes; ++k) {
@@ -237,7 +237,7 @@ static void vary_chords(struct rr_motif *m, uint32_t *r, unsigned amount)
     }
 }
 
-static void generate(struct rr_engine *e, unsigned c, unsigned style, uint32_t seed)
+RR_SMALL static void generate(struct rr_engine *e, unsigned c, unsigned style, uint32_t seed)
 {
     struct rr_comp_state *s = &e->comp[c];
     struct rr_motif *m = &s->cur;
@@ -270,7 +270,7 @@ static void generate(struct rr_engine *e, unsigned c, unsigned style, uint32_t s
 }
 
 /* ---------------- harmony ---------------- */
-static unsigned quality(const struct rr_engine *e, unsigned root, unsigned style)
+RR_SMALL static unsigned quality(const struct rr_engine *e, unsigned root, unsigned style)
 {
     unsigned mode = e->mode;
     unsigned minor = mode == 1 || mode == 3 ? (root == 1 || root == 2 || root == 5) : (root == 0 || root == 3 || (root == 4 && mode != 2));
@@ -281,7 +281,7 @@ static unsigned quality(const struct rr_engine *e, unsigned root, unsigned style
     if ((style == RS_ROOTS || style == RS_DUB || style == RS_JUNGLE) && minor && root == 0) return CH_MIN7;
     return minor ? CH_MIN : CH_MAJ;
 }
-static void new_progression(struct rr_engine *e, unsigned style, uint32_t *r)
+RR_SMALL static void new_progression(struct rr_engine *e, unsigned style, uint32_t *r)
 {
     unsigned mask = rr_styles[style].prog_mask, n = sizeof prog_family, pick = 0, tries = 0;
     do { pick = rr_range(r, n); } while (!(prog_family[pick] & mask) && ++tries < 40);
@@ -290,7 +290,7 @@ static void new_progression(struct rr_engine *e, unsigned style, uint32_t *r)
         e->prog_q[b] = (uint8_t)quality(e, e->prog[b], style);
     }
 }
-static void set_mode_for(struct rr_engine *e, unsigned style)
+RR_SMALL static void set_mode_for(struct rr_engine *e, unsigned style)
 {
     unsigned mode = rr_styles[style].mode;
     if (mode == e->mode) return;
@@ -302,7 +302,7 @@ static void set_mode_for(struct rr_engine *e, unsigned style)
 }
 
 /* ---------------- arrangement ---------------- */
-static unsigned section_mask(const struct rr_engine *e, unsigned sec, unsigned pos)
+RR_SMALL static unsigned section_mask(const struct rr_engine *e, unsigned sec, unsigned pos)
 {
     enum { D = 1, B = 2, S = 4, O = 8, H = 16, P = 32, C = 64, X = 128 };
     unsigned m;
@@ -321,7 +321,7 @@ static unsigned section_mask(const struct rr_engine *e, unsigned sec, unsigned p
     if (e->energy > 75) m |= C;
     return m;
 }
-static unsigned next_section(struct rr_engine *e)
+RR_SMALL static unsigned next_section(struct rr_engine *e)
 {
     unsigned sec = e->section, a = e->evolve * e->dim[RD_ARRANGE] / 100, dub = e->dub;
     if (e->freeze & (1U << RC_ARRANGE)) return sec;
@@ -340,13 +340,13 @@ static unsigned next_section(struct rr_engine *e)
 }
 
 /* ---------------- evolution ---------------- */
-static unsigned comp_dim(unsigned c)
+RR_SMALL static unsigned comp_dim(unsigned c)
 {
     static const uint8_t map[RR_MOTIF_COMPS] = {RD_RHYTHM, RD_RHYTHM, RD_BASS, RD_INSTR, RD_INSTR, RD_INSTR, RD_INSTR, RD_FX};
     return map[c];
 }
 static unsigned effective(const struct rr_engine *e, unsigned dim) { return e->evolve * e->dim[dim] / 100U; }
-static int mutate(struct rr_engine *e, unsigned c, unsigned amount)
+RR_SMALL static int mutate(struct rr_engine *e, unsigned c, unsigned amount)
 {
     struct rr_comp_state *s = &e->comp[c];
     uint32_t *r = &e->rng;
@@ -383,7 +383,7 @@ static int mutate(struct rr_engine *e, unsigned c, unsigned amount)
     e->events |= EV_MUTATE;
     return 1;
 }
-static void phrase_evolution(struct rr_engine *e)
+RR_SMALL static void phrase_evolution(struct rr_engine *e)
 {
     for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) {
         struct rr_comp_state *s = &e->comp[c];
@@ -419,7 +419,7 @@ static const uint8_t switch_order[RR_TMODES][RR_COMPS] = {
     {RC_FX, RC_PERC, RC_DRUMS, RC_BASS, RC_SKANK, RC_ORGAN, RC_PIANO, RC_HORNS, RC_HARMONY, RC_ARRANGE},
     {RC_DRUMS, RC_FX, RC_SKANK, RC_PERC, RC_HORNS, RC_ORGAN, RC_HARMONY, RC_PIANO, RC_BASS, RC_ARRANGE},
 };
-static unsigned switch_bar(const struct rr_engine *e, unsigned index)
+RR_SMALL static unsigned switch_bar(const struct rr_engine *e, unsigned index)
 {
     unsigned bars = e->tbars ? e->tbars : 1;
     switch (e->tmode) {
@@ -429,7 +429,7 @@ static unsigned switch_bar(const struct rr_engine *e, unsigned index)
     default: return index * bars / RR_COMPS;
     }
 }
-static void switch_comp(struct rr_engine *e, unsigned c)
+RR_SMALL static void switch_comp(struct rr_engine *e, unsigned c)
 {
     unsigned t = e->target;
     if (c == RC_HARMONY) {
@@ -443,7 +443,7 @@ static void switch_comp(struct rr_engine *e, unsigned c)
     generate(e, c, t, rr_rand(&e->rng));
     s->kept = s->cur;
 }
-static void transition_step(struct rr_engine *e, struct rr_bar_info *info)
+RR_SMALL static void transition_step(struct rr_engine *e, struct rr_bar_info *info)
 {
     unsigned k = e->tprogress, done = 1;
     info->events |= EV_TRANSITION;
@@ -484,7 +484,7 @@ static void transition_step(struct rr_engine *e, struct rr_bar_info *info)
 }
 
 /* ---------------- rendering ---------------- */
-static unsigned reg_base(unsigned track, unsigned key)
+RR_SMALL static unsigned reg_base(unsigned track, unsigned key)
 {
     switch (track) {
     case RT_BASS: return 28 + (key + 8) % 12;        /* lowest note >= E1 */
@@ -494,20 +494,20 @@ static unsigned reg_base(unsigned track, unsigned key)
     default: return 60 + key % 12;
     }
 }
-static void put(struct rr_cell *c, unsigned note, unsigned vel, unsigned chord, unsigned gate, unsigned tie)
+RR_SMALL static void put(struct rr_cell *c, unsigned note, unsigned vel, unsigned chord, unsigned gate, unsigned tie)
 {
     c->note = (uint8_t)rr_clamp((int)note, 0, 127);
     c->velocity = (uint8_t)rr_clamp((int)vel, 1, 127);
     c->bits = (uint16_t)((chord & 31U) | ((gate & 15U) << 5) | ((tie & 1U) << 12));
 }
-static unsigned chord_for(const struct rr_engine *e, unsigned c, unsigned q, unsigned style)
+RR_SMALL static unsigned chord_for(const struct rr_engine *e, unsigned c, unsigned q, unsigned style)
 {
     if (c == RC_SKANK) return q == CH_MIN || q == CH_MIN7 || q == CH_MIN9 ? CH_SKMIN : q == CH_MADD9 ? CH_MADD9 : CH_SKMAJ;
     if (c == RC_ORGAN && style <= RS_RUBADUB) return q == CH_MIN7 ? CH_MIN : q;
     if (c == RC_PIANO && e->comp[c].cur.voicing) return q == CH_MIN || q == CH_MIN7 ? CH_MIN7 : q == CH_MAJ ? CH_MAJ6 : q;
     return q;
 }
-static unsigned line_note(const struct rr_engine *e, const struct rr_motif *m, unsigned j, unsigned track, unsigned root, int shift)
+RR_SMALL static unsigned line_note(const struct rr_engine *e, const struct rr_motif *m, unsigned j, unsigned track, unsigned root, int shift)
 {
     unsigned base = reg_base(track, e->key);
     if (m->hit[j] & MH_CHORD) {
@@ -517,7 +517,7 @@ static unsigned line_note(const struct rr_engine *e, const struct rr_motif *m, u
     }
     return base + rr_scale_note(0, e->mode, root, m->deg[j]) + (unsigned)shift;
 }
-static void render_line(struct rr_engine *e, unsigned c, unsigned track, struct rr_cell out[RR_STEPS], unsigned pos, unsigned human)
+RR_SMALL static void render_line(struct rr_engine *e, unsigned c, unsigned track, struct rr_cell out[RR_STEPS], unsigned pos, unsigned human)
 {
     const struct rr_motif *m = &e->comp[c].cur;
     unsigned k = e->stretch[track] ? e->stretch[track] : 1, cycle = RR_MOTIF * k;
@@ -548,7 +548,7 @@ static void render_line(struct rr_engine *e, unsigned c, unsigned track, struct 
         put(&out[s], note, (unsigned)vel, chord, gate, len > 1);
     }
 }
-static void fill_steps(const struct rr_engine *e, struct rr_cell *cells, unsigned from, unsigned intensity, uint32_t r)
+RR_SMALL static void fill_steps(const struct rr_engine *e, struct rr_cell *cells, unsigned from, unsigned intensity, uint32_t r)
 {
     unsigned style = e->comp[RC_DRUMS].cur.style;
     static const uint16_t toms[] = {DK_HT, DK_HT, DK_MT, DK_MT, DK_LT, DK_LT, DK_SD, DK_SD};
@@ -563,11 +563,11 @@ static void fill_steps(const struct rr_engine *e, struct rr_cell *cells, unsigne
         cells[s].note = 0;
     }
 }
-void rr_engine_fill(const struct rr_engine *e, struct rr_cell drums[RR_STEPS], unsigned from, unsigned intensity)
+RR_SMALL void rr_engine_fill(const struct rr_engine *e, struct rr_cell drums[RR_STEPS], unsigned from, unsigned intensity)
 {
     if (from < RR_STEPS) fill_steps(e, drums, from, intensity, e->rng ^ e->bar);
 }
-static void render_drums(struct rr_engine *e, struct rr_cell out[RR_STEPS], unsigned active, unsigned human)
+RR_SMALL static void render_drums(struct rr_engine *e, struct rr_cell out[RR_STEPS], unsigned active, unsigned human)
 {
     const struct rr_motif *d = &e->comp[RC_DRUMS].cur, *p = &e->comp[RC_PERC].cur;
     unsigned light = e->section == SEC_INTRO && e->phrase_pos < 4, build = e->section == SEC_BUILD;
@@ -600,7 +600,7 @@ static void render_drums(struct rr_engine *e, struct rr_cell out[RR_STEPS], unsi
 }
 
 /* ---------------- public API ---------------- */
-void rr_engine_init(struct rr_engine *e, unsigned style, uint32_t seed)
+RR_SMALL void rr_engine_init(struct rr_engine *e, unsigned style, uint32_t seed)
 {
     static const uint8_t keys[] = {9, 2, 4, 7, 0, 5, 11, 9};
     memset(e, 0, sizeof *e);
@@ -625,7 +625,7 @@ void rr_engine_init(struct rr_engine *e, unsigned style, uint32_t seed)
     }
     e->section = SEC_INTRO;
 }
-void rr_engine_render(struct rr_engine *e, struct rr_cell out[RR_GEN_TRACKS][RR_STEPS], struct rr_bar_info *info)
+RR_SMALL void rr_engine_render(struct rr_engine *e, struct rr_cell out[RR_GEN_TRACKS][RR_STEPS], struct rr_bar_info *info)
 {
     memset(out, 0, sizeof(struct rr_cell) * RR_GEN_TRACKS * RR_STEPS);
     memset(info, 0, sizeof *info);
@@ -679,7 +679,7 @@ void rr_engine_render(struct rr_engine *e, struct rr_cell out[RR_GEN_TRACKS][RR_
     info->chord_q = e->prog_q[e->phrase_pos];
     ++e->bar;
 }
-void rr_engine_style(struct rr_engine *e, unsigned style, unsigned mode, unsigned bars, unsigned bpm)
+RR_SMALL void rr_engine_style(struct rr_engine *e, unsigned style, unsigned mode, unsigned bars, unsigned bpm)
 {
     if (style >= RR_STYLES) return;
     if (e->transition && style == e->target) return;
@@ -697,32 +697,32 @@ void rr_engine_style(struct rr_engine *e, unsigned style, unsigned mode, unsigne
     if (e->tempo_plan == 1 && e->tbars < 2) e->tbars = 2;
     e->events |= EV_TRANSITION;
 }
-void rr_engine_freeze(struct rr_engine *e, unsigned comp, int on)
+RR_SMALL void rr_engine_freeze(struct rr_engine *e, unsigned comp, int on)
 {
     if (comp >= RR_COMPS) return;
     uint16_t bit = (uint16_t)(1U << comp);
     if (on < 0) on = !(e->freeze & bit);
     if (on) e->freeze |= bit; else e->freeze &= (uint16_t)~bit;
 }
-void rr_engine_mutate(struct rr_engine *e, unsigned comp, unsigned depth)
+RR_SMALL void rr_engine_mutate(struct rr_engine *e, unsigned comp, unsigned depth)
 {
     for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c)
         if ((comp == 255 || comp == c) && !(e->freeze & (1U << c))) mutate(e, c, depth);
     if ((comp == 255 || comp == RC_HARMONY) && !(e->freeze & (1U << RC_HARMONY)) && depth > 50) new_progression(e, e->style, &e->rng);
 }
-void rr_engine_keep(struct rr_engine *e)
+RR_SMALL void rr_engine_keep(struct rr_engine *e)
 {
     for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) e->comp[c].kept = e->comp[c].cur;
     memcpy(e->prog_kept, e->prog, RR_PHRASE); memcpy(e->progq_kept, e->prog_q, RR_PHRASE);
 }
-void rr_engine_reject(struct rr_engine *e)
+RR_SMALL void rr_engine_reject(struct rr_engine *e)
 {
     for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) if (!(e->freeze & (1U << c))) {
         e->comp[c].cur = e->comp[c].kept; e->comp[c].age = 0;
     }
     if (!(e->freeze & (1U << RC_HARMONY))) { memcpy(e->prog, e->prog_kept, RR_PHRASE); memcpy(e->prog_q, e->progq_kept, RR_PHRASE); }
 }
-void rr_engine_command(struct rr_engine *e, unsigned cmd, unsigned arg)
+RR_SMALL void rr_engine_command(struct rr_engine *e, unsigned cmd, unsigned arg)
 {
     unsigned bars = 1 + e->intensity / 34;              /* 1..3 bars at default intensity */
     struct rr_comp_state *b = &e->comp[RC_BASS];
@@ -787,11 +787,11 @@ void rr_engine_command(struct rr_engine *e, unsigned cmd, unsigned arg)
     case CMD_SIREN: e->events |= EV_SIREN; break;
     }
 }
-unsigned rr_engine_tempo(const struct rr_engine *e, unsigned current)
+RR_SMALL unsigned rr_engine_tempo(const struct rr_engine *e, unsigned current)
 {
     return e->transition ? e->bpm_target : current;
 }
-unsigned rr_motif_hash(const struct rr_motif *m)
+RR_SMALL unsigned rr_motif_hash(const struct rr_motif *m)
 {
     uint32_t h = 2166136261u;
     for (unsigned i = 0; i < RR_MOTIF; ++i) {

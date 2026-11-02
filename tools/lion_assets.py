@@ -62,15 +62,25 @@ def main():
         f.write('/* Supplied artwork; see assets/lion/README.md for provenance. */\n')
         f.write(f'#define RR_LION_W {ow}\n#define RR_LION_H {oh}\n#define RR_LION_STRIDE {stride}\n')
         f.write('static const uint16_t rr_lion_palette[16] = {' + ','.join(f'0x{v:04x}' for v in rgb565 + [0] * (16 - len(rgb565))) + '};\n')
-        f.write('static const uint8_t rr_lion_pixels[RR_LION_H * RR_LION_STRIDE] = {\n')
-        for y in range(oh):
-            f.write(''.join(f'{b},' for b in packed[y * stride:(y + 1) * stride]) + '\n')
+        # Run-length coded: one byte per run, (length-1) << 4 | colour, length 1..16.
+        runs = []
+        i = 0
+        while i < len(out):
+            n = 1
+            while i + n < len(out) and out[i + n] == out[i] and n < 16:
+                n += 1
+            runs.append(((n - 1) << 4) | out[i])
+            i += n
+        f.write(f'#define RR_LION_RLE {len(runs)}\n')
+        f.write('static const uint8_t rr_lion_rle[RR_LION_RLE] = {\n')
+        for k in range(0, len(runs), 32):
+            f.write(''.join(f'{b},' for b in runs[k:k + 32]) + '\n')
         f.write('};\n')
     os.makedirs(os.path.dirname(PREVIEW), exist_ok=True)
     prev = Image.new('RGB', (ow, oh))
     prev.putdata([rgb[i] if i else (40, 40, 40) for i in out])
     prev.resize((ow * 8, oh * 8), Image.NEAREST).save(PREVIEW)
-    print(f'lion {ow}x{oh}, {len(used)} colours, {len(packed)} bytes')
+    print(f'lion {ow}x{oh}, {len(used)} colours, {len(packed)} bytes unpacked')
     for i, c in enumerate(rgb):
         print(i, c)
 

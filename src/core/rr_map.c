@@ -47,28 +47,28 @@ static const struct rr_map defaults[] = {
 };
 typedef char rr_map_table_fits[sizeof defaults / sizeof defaults[0] <= RR_MAPS ? 1 : -1];
 
-static int continuous(unsigned t)
+RR_SMALL static int continuous(unsigned t)
 {
     return (t >= T_LEVEL_BASS && t <= T_PERC_LEVEL && t != T_STYLE && t != T_BPM && t != T_FX_SELECT) ;
 }
-void rr_map_defaults(struct rr_mapper *m)
+RR_SMALL void rr_map_defaults(struct rr_mapper *m)
 {
     memset(m, 0, sizeof *m);
     memcpy(m->map, defaults, sizeof defaults);
     m->pickup = 1;
     for (unsigned t = 0; t < RR_TARGETS; ++t) { m->value[t] = 64; m->last[t] = 255; }
 }
-void rr_map_set_value(struct rr_mapper *m, unsigned target, unsigned value)
+RR_SMALL void rr_map_set_value(struct rr_mapper *m, unsigned target, unsigned value)
 {
     if (target >= RR_TARGETS) return;
     if (m->value[target] != value) { m->picked[target] = 0; m->last[target] = 255; }
     m->value[target] = (uint8_t)(value > 127 ? 127 : value);
 }
-void rr_map_learn(struct rr_mapper *m, unsigned target)
+RR_SMALL void rr_map_learn(struct rr_mapper *m, unsigned target)
 {
     m->learn = target != T_NONE; m->learn_target = (uint8_t)target; m->learn_bank = m->bank;
 }
-int rr_map_valid(const struct rr_mapper *m)
+RR_SMALL int rr_map_valid(const struct rr_mapper *m)
 {
     if (m->bank >= RR_BANKS) return 0;
     for (unsigned i = 0; i < RR_MAPS; ++i) {
@@ -78,7 +78,7 @@ int rr_map_valid(const struct rr_mapper *m)
     }
     return 1;
 }
-static unsigned learn(struct rr_mapper *m, unsigned kind, unsigned ch, unsigned num, struct rr_action *out)
+RR_SMALL static unsigned learn(struct rr_mapper *m, unsigned kind, unsigned ch, unsigned num, struct rr_action *out)
 {
     unsigned slot = RR_MAPS;
     for (unsigned i = 0; i < RR_MAPS; ++i) {
@@ -102,7 +102,7 @@ static unsigned learn(struct rr_mapper *m, unsigned kind, unsigned ch, unsigned 
     out->target = e->target; out->value = 0; out->pressed = 0; out->from_learn = 1;
     return 1;
 }
-unsigned rr_map_message(struct rr_mapper *m, const uint8_t *msg, unsigned n, struct rr_action out[2])
+RR_SMALL unsigned rr_map_message(struct rr_mapper *m, const uint8_t *msg, unsigned n, struct rr_action out[2])
 {
     if (!n || msg[0] < 0x80 || msg[0] >= 0xf0) return 0;
     unsigned type = msg[0] & 0xf0U, ch = msg[0] & 15U, kind, num = 0, raw = 0, pressed = 1;

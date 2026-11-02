@@ -1,0 +1,19 @@
+{
+    "flash_bytes":  1048576,
+    "board_access":  false,
+    "fits":  true,
+    "packager":  "source",
+    "FLASH_BIN_SIZE":  471040,
+    "FLASH_NEED_SIZE":  1044480,
+    "VM_START_ADDR":  471040,
+    "VM_END_ADDR":  503808,
+    "VM_REAL_SIZE":  32768,
+    "BTIF_RESERVED_START":  503808,
+    "BTIF_RESERVED_END":  507904,
+    "USER_RESERVED_START":  507904,
+    "USER_RESERVED_END":  1044480,
+    "vm_minimum_bytes":  32768,
+    "vm_extra_gap_bytes":  0,
+    "btif_bytes":  4096,
+    "user_bytes":  536576
+}

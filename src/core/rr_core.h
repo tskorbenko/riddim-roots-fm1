@@ -9,6 +9,12 @@
 #include <string.h>
 
 #define RR_VERSION "0.3.0"
+/* Control-side code is optimised for size; audio code (rr_fx.c) is not. */
+#if defined(__clang__) && !defined(FM1_HOST_TEST)
+#define RR_SMALL __attribute__((minsize))
+#else
+#define RR_SMALL
+#endif
 enum { RR_STEPS = 16, RR_MOTIF = 32, RR_GEN_TRACKS = 6, RR_PHRASE = 8 };
 
 enum rr_style {

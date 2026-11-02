@@ -1,0 +1,40 @@
+/* SPDX-License-Identifier: GPL-3.0-only WITH GPL-3.0-linking-exception */
+/* RIDDIM ROOTS replaces the FM1 Open panel UI with its own performance UI.
+ * Generated into app/screen.c by tools/Build.ps1. */
+#include "instrument.h"
+#include "riddim/rr_app.h"
+#include "riddim/rr_ui.h"
+
+/* The official package checks require these connectivity APIs to stay linked
+ * even though this UI does not expose them. The table keeps, never calls. */
+static const void *const sdk_api[] = {
+    (const void *)fm1_ble_set_role, (const void *)fm1_ble_scan, (const void *)fm1_ble_connect,
+    (const void *)fm1_ble_disconnect, (const void *)fm1_ble_get_status, (const void *)fm1_ble_get_device,
+    (const void *)fm1_bluetooth_configure, (const void *)fm1_bluetooth_get_status,
+    (const void *)groove_tuning_capture, (const void *)groove_tuning_apply, (const void *)groove_project_apply_edit
+};
+static const void *const *volatile sdk_api_anchor;
+static int started;
+
+void groove_screen_init(void)
+{
+    sdk_api_anchor = sdk_api;
+    fm1_controls_init();
+    fm1_screen_init();
+    fm1_screen_fill(0, 0, FM1_SCREEN_WIDTH, FM1_SCREEN_HEIGHT, 0x0000);
+    rr_ui_init();
+}
+void groove_screen_control(void)
+{
+    struct fm1_controls controls;
+    fm1_controls_read(&controls);
+    if (!started) { started = 1; rr_app_init(); }   /* engine is running by now */
+    rr_app_poll(&controls);
+    rr_ui_poll(fm1_millis());
+}
+void groove_screen_mmc(unsigned command)
+{
+    if (command == 2 || command == 3) rr_app_play(1);
+    else if (command == 1) rr_app_play(0);
+}
+void groove_screen_tap(uint32_t now) { (void)groove_tempo_tap(now); }

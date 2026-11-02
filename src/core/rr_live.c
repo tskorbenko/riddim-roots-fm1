@@ -9,14 +9,14 @@ enum { CH_A = 6, CH_B = 9 };
 static uint8_t refs[2][128];
 
 static unsigned lane(unsigned ch) { return ch == CH_B; }
-static void out_on(rr_emit_fn emit, void *ctx, unsigned ch, unsigned note, unsigned vel)
+RR_SMALL static void out_on(rr_emit_fn emit, void *ctx, unsigned ch, unsigned note, unsigned vel)
 {
     uint8_t *r = &refs[lane(ch)][note];
     if ((*r)++) return;            /* already sounding: share it */
     uint8_t m[3] = {(uint8_t)(0x90 | ch), (uint8_t)note, (uint8_t)(vel ? vel : 1)};
     emit(ctx, m, 3);
 }
-static void out_off(struct rr_live *l, rr_emit_fn emit, void *ctx, unsigned ch, unsigned note)
+RR_SMALL static void out_off(struct rr_live *l, rr_emit_fn emit, void *ctx, unsigned ch, unsigned note)
 {
     uint8_t *r = &refs[lane(ch)][note];
     if (!*r || --*r) return;
@@ -24,13 +24,13 @@ static void out_off(struct rr_live *l, rr_emit_fn emit, void *ctx, unsigned ch, 
     uint8_t m[3] = {(uint8_t)(0x80 | ch), (uint8_t)note, 0};
     emit(ctx, m, 3);
 }
-void rr_live_init(struct rr_live *l)
+RR_SMALL void rr_live_init(struct rr_live *l)
 {
     memset(l, 0, sizeof *l);
     memset(refs, 0, sizeof refs);
     l->split = 60; l->key = 9; l->chord_minor = 1;
 }
-static unsigned snap(const struct rr_live *l, unsigned note, unsigned *degree)
+RR_SMALL static unsigned snap(const struct rr_live *l, unsigned note, unsigned *degree)
 {
     static const uint8_t minor[7] = {0, 2, 3, 5, 7, 8, 10}, major[7] = {0, 2, 4, 5, 7, 9, 11};
     const uint8_t *sc = l->scale_mode == 1 || l->scale_mode == 3 ? major : minor;
@@ -41,7 +41,7 @@ static unsigned snap(const struct rr_live *l, unsigned note, unsigned *degree)
     *degree = best;
     return note - (unsigned)rel + sc[best];
 }
-static unsigned build_chord(const struct rr_live *l, unsigned note, uint8_t out[4], unsigned smart)
+RR_SMALL static unsigned build_chord(const struct rr_live *l, unsigned note, uint8_t out[4], unsigned smart)
 {
     static const uint8_t minor[7] = {0, 2, 3, 5, 7, 8, 10}, major[7] = {0, 2, 4, 5, 7, 9, 11};
     const uint8_t *sc = l->scale_mode == 1 || l->scale_mode == 3 ? major : minor;
@@ -54,7 +54,7 @@ static unsigned build_chord(const struct rr_live *l, unsigned note, uint8_t out[
     }
     return n;
 }
-int rr_live_note(struct rr_live *l, unsigned note, unsigned velocity, rr_emit_fn emit, void *ctx)
+RR_SMALL int rr_live_note(struct rr_live *l, unsigned note, unsigned velocity, rr_emit_fn emit, void *ctx)
 {
     note &= 127;
     if (velocity) {
@@ -89,7 +89,7 @@ int rr_live_note(struct rr_live *l, unsigned note, unsigned velocity, rr_emit_fn
     l->held_ch[note] = 0;
     return 0;
 }
-void rr_live_sustain(struct rr_live *l, unsigned on, rr_emit_fn emit, void *ctx)
+RR_SMALL void rr_live_sustain(struct rr_live *l, unsigned on, rr_emit_fn emit, void *ctx)
 {
     l->sustain = (uint8_t)!!on;
     if (on) return;
@@ -99,7 +99,7 @@ void rr_live_sustain(struct rr_live *l, unsigned on, rr_emit_fn emit, void *ctx)
             out_off(l, emit, ctx, k ? CH_B : CH_A, n);
         }
 }
-void rr_live_panic(struct rr_live *l, rr_emit_fn emit, void *ctx)
+RR_SMALL void rr_live_panic(struct rr_live *l, rr_emit_fn emit, void *ctx)
 {
     for (unsigned k = 0; k < 2; ++k) for (unsigned n = 0; n < 128; ++n) if (refs[k][n]) {
         uint8_t m[3] = {(uint8_t)(0x80 | (k ? CH_B : CH_A)), (uint8_t)n, 0};
@@ -109,7 +109,7 @@ void rr_live_panic(struct rr_live *l, rr_emit_fn emit, void *ctx)
     memset(l->held, 0, sizeof l->held); memset(l->held_ch, 0, sizeof l->held_ch);
     memset(l->sustained, 0, sizeof l->sustained); l->sustain = 0;
 }
-unsigned rr_live_count(const struct rr_live *l)
+RR_SMALL unsigned rr_live_count(const struct rr_live *l)
 {
     unsigned n = 0;
     (void)l;
