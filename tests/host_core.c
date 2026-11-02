@@ -120,12 +120,17 @@ static void test_evolution(void)
     }
     /* Acceptance: ROOTS at 90 changes drums, bass, accompaniment and arrangement. */
     rr_engine_init(&e, RS_ROOTS, 99); e.evolve = 90; hashes(&e, before);
-    unsigned sections = 0, last = e.section;
-    for (unsigned b = 0; b < 48; ++b) { rr_engine_render(&e, bar, &info); if (info.section != last) { ++sections; last = info.section; } validate_bar(); }
-    hashes(&e, after);
+    unsigned sections = 0, last = e.section, moves[RR_MOTIF_COMPS] = {0};
+    for (unsigned b = 0; b < 48; ++b) {
+        unsigned h[RR_MOTIF_COMPS];
+        hashes(&e, h);
+        rr_engine_render(&e, bar, &info); if (info.section != last) { ++sections; last = info.section; } validate_bar();
+        hashes(&e, after);
+        for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) moves[c] += h[c] != after[c];
+    }
     unsigned changed = 0;
-    for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) changed += before[c] != after[c];
-    CHECK(before[RC_DRUMS] != after[RC_DRUMS] && before[RC_BASS] != after[RC_BASS], "drums and bass evolve at 90");
+    for (unsigned c = 0; c < RR_MOTIF_COMPS; ++c) changed += moves[c] != 0;
+    CHECK(moves[RC_DRUMS] >= 2 && moves[RC_BASS] >= 2, "drums and bass evolve at 90 (%u, %u)", moves[RC_DRUMS], moves[RC_BASS]);
     CHECK(changed >= 5 && sections >= 3, "meaningful evolution: %u comps, %u sections", changed, sections);
     CHECK(e.style == RS_ROOTS, "style identity kept");
 }

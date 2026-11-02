@@ -1,8 +1,8 @@
 {
     "passed":  true,
-    "elf_sha256":  "1604a7950345dee7fe5bd76c55a7e8c41591cd3d736f9e0f6eb2c2d6de180e8f",
-    "allocated_image_bytes":  453628,
-    "app_image_bytes":  453576,
+    "elf_sha256":  "90763af732a74bea64c1dcbc3118cb782c19532f198ac4caa55a98fe70286ac7",
+    "allocated_image_bytes":  443100,
+    "app_image_bytes":  443048,
     "startup_entry_verified":  true,
     "startup_entry":  33554720,
     "instrument_ready":  true,
@@ -11,19 +11,19 @@
                      {
                          "name":  ".text",
                          "address":  33554720,
-                         "bytes":  369568,
+                         "bytes":  359072,
                          "nobits":  false
                      },
                      {
                          "name":  ".ram0_data",
                          "address":  29360128,
-                         "bytes":  83976,
+                         "bytes":  83944,
                          "nobits":  false
                      },
                      {
                          "name":  ".ram0_bss",
-                         "address":  29444104,
-                         "bytes":  283136,
+                         "address":  29444072,
+                         "bytes":  266752,
                          "nobits":  true
                      },
                      {
@@ -40,14 +40,14 @@
                      }
                  ],
     "heap_symbols":  {
-                         "HEAP_BEGIN":  29727264,
+                         "HEAP_BEGIN":  29710848,
                          "HEAP_END":  29883692,
                          "RAM_HEAP_BEGIN":  0,
                          "RAM_HEAP_END":  0,
-                         "_HEAP_BEGIN":  29727264,
+                         "_HEAP_BEGIN":  29710848,
                          "_HEAP_END":  29883692
                      },
-    "runtime_heap_bytes":  156428,
+    "runtime_heap_bytes":  172844,
     "minimum_runtime_heap_bytes":  49152,
     "classic_acl_tx_bytes":  1024,
     "classic_acl_rx_bytes":  4096,

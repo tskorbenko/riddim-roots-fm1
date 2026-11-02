@@ -1,0 +1,17 @@
+{
+ "note": "RIDDIM ROOTS demo catalog: one locally built firmware.",
+ "default": "riddim",
+ "firmwares": [
+  {
+   "id": "riddim",
+   "name": "RIDDIM ROOTS",
+   "version": "0.3.0 DUB EVOLUTION",
+   "author": "RIDDIM ROOTS project",
+   "license": "GPL-3.0-only WITH GPL-3.0-linking-exception (+ FM1 SDK terms)",
+   "about": "Autonomous reggae/dub band with live dub-producer controls: 11 styles, evolution, freeze, conductor, sound-system FX and the animated Lion of Judah. Press Start, then Space (PLAY).",
+   "repo": "https://github.com/m-vave/fm1_open",
+   "package": "RIDDIM_ROOTS_v0.3.0.fwsc",
+   "sha256": "11580736a1431ba11b654096e7d25db1aed99559b3482753c71bb23cf302b2a0"
+  }
+ ]
+}

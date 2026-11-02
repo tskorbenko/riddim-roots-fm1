@@ -52,7 +52,7 @@ void rr_fx_init(void)
     memset(ring, 0, sizeof ring); memset(echo, 0, sizeof echo);
     memset(&st, 0, sizeof st);
     st.noise = 0x1234567u; st.gain = 32768;
-    param[FXP_FILTER] = 64; param[FXP_MASTER] = 110; param[FXP_ECHO_SAMPLES] = 9000; param[FXP_ECHO_FB] = 70;
+    param[FXP_FILTER] = 64; param[FXP_MASTER] = 127; param[FXP_ECHO_SAMPLES] = 9000; param[FXP_ECHO_FB] = 70;
     param[FXP_WARMTH] = 40; param[FXP_RESONANCE] = 30; param[FXP_SIREN_RATE] = 40; param[FXP_STEP_SAMPLES] = 9187;
     param[FXP_INSERT] = FX_PHASER;
 }
@@ -214,7 +214,7 @@ FM1_AUDIO_CODE void rr_fx_process(int32_t *out)
     if (fcoef > 26000) fcoef = 26000;
     int32_t q = 32768 - param[FXP_RESONANCE] * 200;
     if (q < 9000) q = 9000;
-    const int32_t warm = param[FXP_WARMTH], master = param[FXP_MASTER] * 258;
+    const int32_t warm = param[FXP_WARMTH], master = param[FXP_MASTER] * 700;   /* up to +8.7 dB makeup; the limiter holds peaks */
     const uint32_t echo_len = (uint32_t)param[FXP_ECHO_SAMPLES] / 2U;      /* half-rate line */
     int32_t fb = param[FXP_ECHO_FB] * 236;                               /* <= 0.92 */
     if (st.fade) { fb = 31500; st.fade = st.fade > FM1_BLOCK_FRAMES ? st.fade - FM1_BLOCK_FRAMES : 0; }

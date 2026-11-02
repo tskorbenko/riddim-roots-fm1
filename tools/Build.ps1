@@ -21,6 +21,7 @@ try {
     New-Item -ItemType Directory -Force $target, (Join-Path $root 'dist') | Out-Null
     Copy-Item src/core/*.c, src/core/*.h, src/fw/*.c, src/fw/*.h, src/ui/*.c, src/ui/*.h $target -Force
     Copy-Item src/fw/screen.c.in (Join-Path $sdk 'app/screen.c') -Force
+    Copy-Item src/fw/fm_factory_min.c.in (Join-Path $sdk 'app/fm_factory.c') -Force
 
     $router = Join-Path $sdk 'app/midi_router.c'
     $text = [IO.File]::ReadAllText($router)

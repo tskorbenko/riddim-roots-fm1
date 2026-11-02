@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RIDDIM ROOTS Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0b09; --panel: #15140f; --line: #2b281d; --text: #f3efe2; --muted: #a9a28a;
+  --red: #d6202a; --gold: #f8c418; --green: #10843f; --leaf: #3fb56b;
+}
+:root[data-theme="light"] { --bg: #f7f2e3; --panel: #fffaf0; --line: #e2d8bc; --text: #1b1a14; --muted: #6d6650; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --bg: #f7f2e3; --panel: #fffaf0; --line: #e2d8bc; --text: #1b1a14; --muted: #6d6650; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Space Grotesk", system-ui, sans-serif; }
+.flag { height: 9px; background: linear-gradient(var(--red) 0 33%, var(--gold) 33% 66%, var(--green) 66%); }
+header { display: flex; gap: 20px; align-items: center; max-width: 1180px; margin: 0 auto; padding: 20px 16px 8px; }
+header img { width: 108px; height: 108px; object-fit: contain; image-rendering: pixelated; flex: none; }
+h1 { margin: 0; font-size: clamp(26px, 4vw, 42px); line-height: 1.05; letter-spacing: -.01em; }
+h1 b { color: var(--gold); }
+.tag { color: var(--muted); margin: 6px 0 0; }
+main { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; }
+@media (max-width: 900px) { main { grid-template-columns: 1fr; } header img { width: 72px; height: 72px; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+.emu { padding: 0; overflow: hidden; }
+.emu iframe { display: block; width: 100%; height: 780px; border: 0; background: #000; }
+.emu .bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 16px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+a { color: var(--gold); }
+h2 { margin: 0 0 10px; font-size: 18px; }
+h2 span { color: var(--green); }
+.steps { margin: 0; padding-left: 20px; }
+.steps li { margin: 4px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+td { padding: 5px 6px; border-top: 1px solid var(--line); vertical-align: top; }
+td:first-child { white-space: nowrap; }
+kbd { font: 600 12px "JetBrains Mono", monospace; background: var(--bg); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
+.stack { display: grid; gap: 16px; align-content: start; }
+.note { font-size: 13px; color: var(--muted); }
+.pill { display: inline-block; font: 600 12px "JetBrains Mono", monospace; padding: 2px 8px; border-radius: 999px; background: var(--green); color: #fff; }
+.pill.r { background: var(--red); } .pill.g { background: var(--gold); color: #1b1a14; }
+</style>
+</head>
+<body>
+<div class="flag"></div>
+<header>
+  <img src="lion.webp" alt="Піксельний Лев Юди з короною і растафаріанським прапором">
+  <div>
+    <h1>RIDDIM ROOTS <b>0.3.0</b> · DUB EVOLUTION</h1>
+    <p class="tag">Справжня прошивка <code>.fwsc</code> для M-VAVE FM-1, запущена в браузері на емуляторі процесора FM-1.
+      Автономний реггі-бенд + жива клавіатура + дабові ефекти.</p>
+  </div>
+</header>
+<main>
+  <section class="card emu" aria-label="Емулятор FM-1">
+    <iframe src="emulator/?fw=riddim&amp;embed=1&amp;mhz=240" title="FM-1 з прошивкою RIDDIM ROOTS" allow="midi; autoplay"></iframe>
+    <div class="bar">
+      <span class="pill">емулятор</span>
+      <span>Натисни <b>Start</b>, потім <kbd>Space</kbd> = PLAY.</span>
+      <a href="emulator/?fw=riddim&amp;mhz=240" target="_blank" rel="noopener">Повна сторінка емулятора ↗</a>
+    </div>
+  </section>
+  <div class="stack">
+    <section class="card">
+      <h2>Швидкий старт <span>· 30 секунд</span></h2>
+      <ol class="steps">
+        <li><b>Start</b> у вікні емулятора, підніми ручку <b>MASTER</b> мишкою.</li>
+        <li><kbd>Space</kbd> — бенд починає грати (ROOTS, 72 BPM). Ще раз — стоп; клавіатура звучить і тоді.</li>
+        <li><kbd>↑</kbd><kbd>↓</kbd> — стиль (застосовується через 0,7 с, без зупинки музики).</li>
+        <li><kbd>,</kbd><kbd>.</kbd> — BPM на будь-якій сторінці.</li>
+        <li>KNOB 1–4 (мишкою) на HOME: <b>EVOLVE · ENERGY · DUB · FILTER</b>.</li>
+        <li>Тримай <kbd>1</kbd> (FX) і грай клавішами <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>… — сирена, ейрхорн, лазер, шум, echo throw, bass drop, tape stop…</li>
+      </ol>
+    </section>
+    <section class="card">
+      <h2>Кнопки FM-1 <span>· клавіатура ПК</span></h2>
+      <table>
+        <tr><td><kbd>Space</kbd> PLAY</td><td>грати / стоп генеративного бенду</td></tr>
+        <tr><td><kbd>7</kbd> HOME</td><td>головна сторінка з левом</td></tr>
+        <tr><td><kbd>0</kbd> SEQ</td><td>STYLE: 11 стилів, режим і довжина переходу; ще раз = GO</td></tr>
+        <tr><td><kbd>3</kbd> ENV</td><td>EVOLVE: 7 вимірів мутації + глобальний EVOLVE</td></tr>
+        <tr><td><kbd>4</kbd> LFO</td><td>FREEZE: заморозка частин; тримай + клавіша = freeze</td></tr>
+        <tr><td><kbd>5</kbd> EDIT</td><td>INSTRUMENTS: звук і гучність кожного музиканта</td></tr>
+        <tr><td><kbd>2</kbd> SCL</td><td>LIVE: NORMAL, CHORD, SMART, SKANK, BASS, SPLIT…</td></tr>
+        <tr><td><kbd>1</kbd> FX</td><td>DUB FX: 24 ефекти; ще раз = запуск</td></tr>
+        <tr><td><kbd>9</kbd> ARP</td><td>CONDUCTOR: FILL, DROP, BUILD, VERSION…; тримай + клавіші</td></tr>
+        <tr><td><kbd>6</kbd> GLO</td><td>MIDI: банки, MIDI Learn, діагностика</td></tr>
+        <tr><td><kbd>8</kbd> SAVE</td><td>SYSTEM: пам'ять M1–M4, флеш, SIMPLE/PERFORMANCE</td></tr>
+        <tr><td><kbd>R</kbd> REC</td><td>TAP TEMPO</td></tr>
+        <tr><td><kbd>←</kbd><kbd>→</kbd></td><td>гортати сторінки</td></tr>
+        <tr><td><kbd>Z</kbd><kbd>X</kbd></td><td>октава живої клавіатури</td></tr>
+      </table>
+    </section>
+    <section class="card">
+      <h2>MIDI-клавіатура <span>· Web MIDI</span></h2>
+      <p>У Chrome/Edge обери вхід у розділі <b>MIDI in</b> повної сторінки емулятора. Байти потрапляють на емульований DIN-вхід FM-1,
+        як з Alesis Vortex через кабель. Фейдери CC20–27 (кан. 1), пади — ноти 36–43 (кан. 10), банки — Program Change 110–112.</p>
+      <p><span class="pill r">DROP</span> <span class="pill g">ECHO</span> <span class="pill">SIREN</span> — пади 4, 2, 1.</p>
+    </section>
+    <p class="note">Демо виконує той самий <code>RIDDIM_ROOTS_v0.3.0.fwsc</code>, що й для пристрою, на емуляторі
+      <a href="https://github.com/joakimeriksson/fm1-emu" target="_blank" rel="noopener">fm1-emu</a> (MIT, Joakim Eriksson).
+      Емулятор — не перевірка на залізі. Звук у браузері залежить від швидкодії ПК: якщо тріщить, обери менший Clock на повній сторінці.</p>
+  </div>
+</main>
+</body>
+</html>

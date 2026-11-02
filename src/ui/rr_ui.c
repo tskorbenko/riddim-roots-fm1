@@ -134,9 +134,9 @@ RR_SMALL static unsigned lion_sample(int x, int y, uint32_t now)
     if (x < 53 && by >= 6 && by <= 40) {
         /* flag cloth waves away from the pole */
         int amp = lion.flag_amp * (53 - x) / 53;
-        int phase = (int)((lion.flag_phase >> 4) + (unsigned)x * 22) & 255;
+        int phase = (int)((lion.flag_phase >> 4) + (unsigned)x * 6) & 255;
         int w = phase < 128 ? (phase < 64 ? phase : 128 - phase) : -(phase < 192 ? phase - 128 : 256 - phase);
-        int sy = by - w * amp / 64;
+        int sy = by - w * amp / 256;
         unsigned p = lion_px(x, sy);
         if (p == 1 || p == 2 || p == 3 || p == 4 || p == 5 || p == 10 || p == 11) return p;
         p = lion_px(x, by);
@@ -270,7 +270,7 @@ RR_SMALL static void knob_text(unsigned k, char *label, char *value)
 RR_SMALL static void header(const char *title, uint32_t now, int lion_small)
 {
     fill(0, 0, W, 2, RED); fill(0, 2, W, 2, GOLD); fill(0, 4, W, 2, GREEN);
-    text(6, 10, title, 2, GOLD);
+    if (strlen(title) > 9) text(6, 14, title, 1, GOLD); else text(6, 10, title, 2, GOLD);
     char b[8];
     num(b, rr.bpm);
     int x = lion_small ? 132 : 172;
@@ -510,8 +510,9 @@ RR_SMALL void rr_ui_poll(uint32_t now)
         lion_update(now);
         frame_ready = 1;
     }
-    /* Up to three bands per call keep each control iteration short. */
-    for (unsigned work = 0; work < 3 && next_band < BANDS; ++work) {
+    /* One changed band per call keeps each control iteration short, so
+     * short button taps and MIDI are serviced between bands. */
+    for (unsigned work = 0; work < 2 && next_band < BANDS; ++work) {
         buf = band[which];
         y0 = (int)(next_band * BAND);
         draw_page(now);

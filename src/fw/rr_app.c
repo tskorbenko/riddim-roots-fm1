@@ -25,7 +25,7 @@ static volatile struct {
     uint32_t magic, ms, playing, style, target, transition, bpm, evolve, freeze, bar_played;
     uint32_t section, live_notes, notes_in, cc_in, midi_errors, page, kmode, mutations, fx_blocks, fx_peak;
     uint32_t underruns, overruns, lion, bank, last_target, last_value, active, energy, dub, bpm_target;
-    uint32_t hash[8], inst[8], level[6], dim[7], mem_used, fx_voices, version, save_result, load_result, shed;
+    uint32_t hash[8], inst[8], level[6], dim[7], mem_used, fx_voices, version, save_result, load_result, shed, pixels, polls;
 } diag;
 
 /* ---- MIDI queue from the routing task ---- */
@@ -64,7 +64,7 @@ static struct {
     uint8_t can_rerender;
 } seq;
 static struct rr_cell cells[RR_GEN_TRACKS][RR_STEPS];
-static uint32_t now_ms, tempo_ms, style_ms, toast_ms;
+static uint32_t now_ms, tempo_ms, style_ms, toast_ms, diag_ms, midi_ms;
 static uint32_t touched[RR_TARGETS];
 static uint8_t inst_user[RR_ROLES_UI];
 static struct { uint8_t track, send, active; uint32_t until; } throw_state;
@@ -265,9 +265,11 @@ RR_SMALL static void rerender_next(void)
     rr.e.skank_muted = keep.skank_muted; rr.e.bass_octave = keep.bass_octave; rr.e.section = keep.section;
     rr.e.build_bars = keep.build_bars; rr.e.version = keep.version; rr.e.rewind_bars = keep.rewind_bars;
     memcpy(rr.e.comp, keep.comp, sizeof keep.comp);
-    if (keep.transition && !seq.before.transition) {
-        rr.e.transition = keep.transition; rr.e.target = keep.target; rr.e.tmode = keep.tmode; rr.e.tbars = keep.tbars;
-        rr.e.tprogress = 0; rr.e.tswitched = 0; rr.e.bpm_from = keep.bpm_from; rr.e.bpm_target = keep.bpm_target; rr.e.tempo_plan = keep.tempo_plan;
+    if (keep.transition && keep.tprogress == 0 && !keep.tswitched) {
+        /* a fresh style request (possibly retargeting a running transition) */
+        rr.e.style = keep.style; rr.e.transition = keep.transition; rr.e.target = keep.target; rr.e.tmode = keep.tmode;
+        rr.e.tbars = keep.tbars; rr.e.tprogress = 0; rr.e.tswitched = 0; rr.e.bpm_from = keep.bpm_from;
+        rr.e.bpm_target = keep.bpm_target; rr.e.tempo_plan = keep.tempo_plan;
     }
     if (keep.bar < seq.before.bar) rr.e.bar = keep.bar;     /* rewind */
     --seq.written;
@@ -520,7 +522,7 @@ RR_SMALL void rr_app_target(unsigned t, unsigned v, unsigned pressed)
 /* ---- MIDI processing (control task) ---- */
 RR_SMALL static void midi_message(const uint8_t *m, unsigned n)
 {
-    rr.midi_flash = 8;
+    rr.midi_flash = 1; midi_ms = now_ms;
     memmove(rr.recent[1], rr.recent[0], sizeof rr.recent - 3);
     rr.recent[0][0] = m[0]; rr.recent[0][1] = n > 1 ? m[1] : 0; rr.recent[0][2] = n > 2 ? m[2] : 0;
     if (rr.recent_n < RR_RECENT) ++rr.recent_n;
@@ -905,7 +907,7 @@ RR_SMALL static void update_diag(void)
     for (unsigned t = 0; t < 8; ++t) diag.inst[t] = rr.inst[t];
     for (unsigned t = 0; t < 6; ++t) diag.level[t] = rr.mix.level[t];
     for (unsigned d = 0; d < RR_DIMS; ++d) diag.dim[d] = rr.e.dim[d];
-    diag.mem_used = rr.memory_used; diag.fx_voices = fs.voices; diag.version = rr.e.version;
+    diag.mem_used = rr.memory_used; diag.fx_voices = fs.voices; diag.version = rr.e.version; diag.pixels = rr_ui_pixels_sent();
 }
 RR_SMALL void rr_app_init(void)
 {
@@ -944,6 +946,7 @@ RR_SMALL void rr_app_poll(const struct fm1_controls *c)
     echo_throw_poll();
     if (now_ms - toast_ms > 250) { toast_ms = now_ms; health_poll(); }
     rr.live.key = rr.e.key; rr.live.scale_mode = rr.e.mode;
-    if (rr.midi_flash) --rr.midi_flash;
-    update_diag();
+    if (rr.midi_flash && now_ms - midi_ms > 150) rr.midi_flash = 0;
+    ++diag.polls;
+    if (now_ms - diag_ms >= 40) { diag_ms = now_ms; update_diag(); }
 }

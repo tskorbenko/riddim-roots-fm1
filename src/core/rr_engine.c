@@ -307,7 +307,7 @@ RR_SMALL static unsigned section_mask(const struct rr_engine *e, unsigned sec, u
     enum { D = 1, B = 2, S = 4, O = 8, H = 16, P = 32, C = 64, X = 128 };
     unsigned m;
     switch (sec) {
-    case SEC_INTRO: m = D | S | O | (pos >= 4 ? B | C : 0) | (pos >= 2 ? H : 0); break;
+    case SEC_INTRO: m = D | S | O | (pos >= 2 ? B | C : 0) | (pos >= 4 ? H : 0); break;
     case SEC_VERSE: m = D | B | S | O | P | C; break;
     case SEC_CHORUS: m = D | B | S | O | P | H | C | X; break;
     case SEC_DUB: m = D | B | X | ((pos & 3) == 3 ? S | O : 0) | (pos == 5 ? H : 0); break;
@@ -570,7 +570,7 @@ RR_SMALL void rr_engine_fill(const struct rr_engine *e, struct rr_cell drums[RR_
 RR_SMALL static void render_drums(struct rr_engine *e, struct rr_cell out[RR_STEPS], unsigned active, unsigned human)
 {
     const struct rr_motif *d = &e->comp[RC_DRUMS].cur, *p = &e->comp[RC_PERC].cur;
-    unsigned light = e->section == SEC_INTRO && e->phrase_pos < 4, build = e->section == SEC_BUILD;
+    unsigned light = e->section == SEC_INTRO && e->phrase_pos < 2, build = e->section == SEC_BUILD;
     for (unsigned s = 0; s < RR_STEPS; ++s) {
         unsigned j = (e->bar * RR_STEPS + s) % RR_MOTIF, hit = 0, vel = 0;
         if (active & 1) {

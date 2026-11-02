@@ -1,0 +1,434 @@
+{
+ "note": "RIDDIM ROOTS project-defined Alesis Vortex Wireless 2 assignments. Reference only: not an Alesis .vw2 preset file.",
+ "firmware": "RIDDIM ROOTS 0.3.0",
+ "bank_select_program_change": {
+  "110": 1,
+  "111": 2,
+  "112": 3
+ },
+ "assignments": [
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 20,
+   "bank": 1,
+   "function": "BASS LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 21,
+   "bank": 1,
+   "function": "DRUMS LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 22,
+   "bank": 1,
+   "function": "SKANK LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 23,
+   "bank": 1,
+   "function": "KEYS LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 24,
+   "bank": 1,
+   "function": "HORNS LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 25,
+   "bank": 1,
+   "function": "PERC/FX LVL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 26,
+   "bank": 1,
+   "function": "DELAY SEND",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 27,
+   "bank": 1,
+   "function": "REVERB SEND",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 20,
+   "bank": 2,
+   "function": "RHYTHM MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 21,
+   "bank": 2,
+   "function": "BASS MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 22,
+   "bank": 2,
+   "function": "HARMONY MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 23,
+   "bank": 2,
+   "function": "INSTR MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 24,
+   "bank": 2,
+   "function": "ARRANGE MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 25,
+   "bank": 2,
+   "function": "TIMBRE MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 26,
+   "bank": 2,
+   "function": "FX MUT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 27,
+   "bank": 2,
+   "function": "EVOLVE",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 20,
+   "bank": 3,
+   "function": "FILTER",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 21,
+   "bank": 3,
+   "function": "DELAY FB",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 22,
+   "bank": 3,
+   "function": "DELAY TIME",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 23,
+   "bank": 3,
+   "function": "REVERB SIZE",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 24,
+   "bank": 3,
+   "function": "FX SELECT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 25,
+   "bank": 3,
+   "function": "FX AMOUNT",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 26,
+   "bank": 3,
+   "function": "ENERGY",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 27,
+   "bank": 3,
+   "function": "DUB",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 36,
+   "bank": "all",
+   "function": "PAD SIREN",
+   "momentary": true,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 37,
+   "bank": "all",
+   "function": "PAD ECHO",
+   "momentary": true,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 38,
+   "bank": "all",
+   "function": "PAD FILL",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 39,
+   "bank": "all",
+   "function": "PAD DROP",
+   "momentary": true,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 40,
+   "bank": "all",
+   "function": "PAD REWIND",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 41,
+   "bank": "all",
+   "function": "PAD VERSION",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 42,
+   "bank": "all",
+   "function": "PAD MUTATE",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Note",
+   "midi_channel": 10,
+   "number": 43,
+   "bank": "all",
+   "function": "PAD FREEZE",
+   "momentary": false,
+   "toggle": true
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 74,
+   "bank": "all",
+   "function": "FILTER",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 71,
+   "bank": "all",
+   "function": "DELAY FB",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 16,
+   "bank": "all",
+   "function": "MORPH",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 17,
+   "bank": "all",
+   "function": "CHAOS",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 7,
+   "bank": "all",
+   "function": "MASTER",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "Aftertouch",
+   "midi_channel": 1,
+   "number": 0,
+   "bank": "all",
+   "function": "EXPRESSION",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 3,
+   "bank": "all",
+   "function": "BPM",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 9,
+   "bank": "all",
+   "function": "STYLE",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 118,
+   "bank": "all",
+   "function": "PLAY",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 117,
+   "bank": "all",
+   "function": "STOP",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 116,
+   "bank": "all",
+   "function": "TAP",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "CC",
+   "midi_channel": 1,
+   "number": 119,
+   "bank": "all",
+   "function": "COMMAND",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "ProgramChange",
+   "midi_channel": 1,
+   "number": 110,
+   "bank": "all",
+   "function": "BANK",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "ProgramChange",
+   "midi_channel": 1,
+   "number": 111,
+   "bank": "all",
+   "function": "BANK",
+   "momentary": false,
+   "toggle": false
+  },
+  {
+   "type": "ProgramChange",
+   "midi_channel": 1,
+   "number": 112,
+   "bank": "all",
+   "function": "BANK",
+   "momentary": false,
+   "toggle": false
+  }
+ ]
+}
