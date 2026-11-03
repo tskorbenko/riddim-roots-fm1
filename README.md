@@ -23,6 +23,7 @@
 
 - [Керування на FM-1](docs/CONTROLS_UA.md) · [Vortex через MIDI](docs/VORTEX_MIDI_UA.md)
 - [Рушій еволюції](docs/EVOLUTION_ENGINE.md) · [Переходи і темп](docs/STYLE_TRANSITIONS.md) · [DUB FX](docs/DUB_FX.md) · [Rasta UI](docs/RASTA_UI.md)
+- **[Інструкція користувача](docs/INSTRUKTSIIA_UA.md)**
 - [Звіт тестів](docs/TEST_REPORT.md) · [Обмеження](docs/LIMITATIONS.md) · [Прогрес](PROGRESS.md) · [Ліцензії](THIRD_PARTY.md)
 
 ## Збірка і тести (Windows, PowerShell)
