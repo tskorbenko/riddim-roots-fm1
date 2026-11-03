@@ -38,3 +38,22 @@ void groove_screen_mmc(unsigned command)
     else if (command == 1) rr_app_play(0);
 }
 void groove_screen_tap(uint32_t now) { (void)groove_tempo_tap(now); }
+#ifdef FM1_OPEN_WEB
+/* The SDK update page links its browser preview against the stock screen's
+ * editor API. RIDDIM ROOTS has its own UI, so the preview gets an empty one:
+ * no LCD edit targets, no preset browser. The updater itself does not use it. */
+void groove_screen_snapshot(uint8_t state[8]) { for (unsigned i = 0; i < 8; ++i) state[i] = 0; }
+int groove_screen_open(unsigned target) { (void)target; return -1; }
+int groove_screen_preset(unsigned slot) { (void)slot; return -1; }
+unsigned groove_screen_preset_position(void) { return 0; }
+const char *groove_screen_web_knobs(void) { return ""; }
+unsigned groove_screen_web_first(void) { return 0; }
+int groove_screen_web_step(unsigned step, unsigned toggle) { (void)step; (void)toggle; return -1; }
+const void *groove_screen_web_targets(void) { return 0; }
+unsigned groove_screen_web_target_count(void) { return 0; }
+unsigned groove_screen_web_context(void) { return 0; }
+unsigned groove_screen_web_mask(void) { return 0; }
+int groove_screen_web_adjust(unsigned context, unsigned action, unsigned index, unsigned owner, int delta)
+{ (void)context; (void)action; (void)index; (void)owner; (void)delta; return -1; }
+void groove_screen_web_fine(unsigned fine) { (void)fine; }
+#endif

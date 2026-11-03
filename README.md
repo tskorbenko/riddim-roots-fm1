@@ -47,7 +47,7 @@ python tools\make_demo.py  # браузерне демо в demo\
 
 Прошивку **не записано** на пристрій і **не перевірено на залізі**. Інструкція користувача і правила безпеки — [docs/INSTRUKTSIIA_UA.md](docs/INSTRUKTSIIA_UA.md).
 
-Онлайн-workbench M-VAVE (<https://open.m-vave.com/fm1-workbench>) **не приймає сторонні `.fwsc`** — тільки вбудовані в нього прошивки. Для запису потрібна офлайн-сторінка оновлення, яку будує SDK (`vendor/fm1_open/sdk/Build.ps1 -Package`): у ній RIDDIM ROOTS, оригінальна V15 для відкату (SHA-256 закріплений у SDK) і офіційний протокол USB-MIDI з перевіркою CRC і звіркою версії після перезапуску. SDK вимагає для цього HTTPS-адресу архіву вихідного коду (`-SourceUrl`, вимога GPL), тому сторінка ще не зібрана.
+Онлайн-workbench M-VAVE (<https://open.m-vave.com/fm1-workbench>) **не приймає сторонні `.fwsc`** — тільки вбудовані в нього прошивки. Для запису потрібна офлайн-сторінка оновлення, яку будує SDK (`vendor/fm1_open/sdk/Build.ps1 -Package`): у ній RIDDIM ROOTS, оригінальна V15 для відкату (SHA-256 закріплений у SDK) і офіційний протокол USB-MIDI з перевіркою CRC і звіркою версії після перезапуску. Сторінка: `dist/RIDDIM_ROOTS_v0.3.0_update.html` (Chrome/Edge). Збірка: `.\tools\Build.ps1 -SourceUrl https://github.com/tskorbenko/riddim-roots-fm1/archive/refs/tags/v0.3.0-1.tar.gz` — SDK вписує в сторінку посилання на вихідний код (вимога GPL).
 
 У пакеті без змін лишаються завантажувач оновлень `ota.bin`, `uboot.boot` і `boot-config.bin` — байт-у-байт файли SDK (хеші в `vendor/fm1_open/sdk/manifest.json`); оброблювач протоколу оновлення (`app/transfer.c` і бібліотека SDK) прошивка не змінює.
 

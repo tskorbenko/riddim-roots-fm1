@@ -4,7 +4,9 @@
 # app/riddim, two one-line hooks are inserted, then the unchanged official
 # SDK build (toolchain manifest checks, image/SRAM/package checks) runs.
 [CmdletBinding()]
-param([string]$Toolchain = $env:FM1_PI32_TOOLCHAIN)
+# -SourceUrl (HTTPS archive of the matching source) also builds the SDK's offline
+# update page with this firmware and the SDK's pinned original V15 for rollback.
+param([string]$Toolchain = $env:FM1_PI32_TOOLCHAIN, [string]$SourceUrl)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $version = '0.3.0'
@@ -39,7 +41,8 @@ try {
     $text = $text.Replace($anchor, "$anchor`n    rr_fx_process(output);")
     [IO.File]::WriteAllText($audio, $text)
 
-    & (Join-Path $sdk 'sdk/Build.ps1') -FirmwareOnly -Toolchain $Toolchain
+    if ($SourceUrl) { & (Join-Path $sdk 'sdk/Build.ps1') -Package -Toolchain $Toolchain -SourceUrl $SourceUrl }
+    else { & (Join-Path $sdk 'sdk/Build.ps1') -FirmwareOnly -Toolchain $Toolchain }
     if (!$?) { throw 'Native SDK build failed.' }
     $build = Join-Path $sdk 'build/dx7'
     $report = Get-Content "$build/firmware-report.json" -Raw | ConvertFrom-Json
@@ -53,6 +56,14 @@ try {
     Copy-Item "$build/firmware-report.json", "$build/package-report.json", "$build/build-identity.json" dist -Force
     $hash = (Get-FileHash $out -Algorithm SHA256).Hash.ToLowerInvariant()
     "$hash  RIDDIM_ROOTS_v$version.fwsc" | Set-Content -Encoding ascii dist/SHA256SUMS.txt
+    if ($SourceUrl) {
+        $web = Get-Content "$build/web-package-report.json" -Raw | ConvertFrom-Json
+        if (!$web.integrated -or $web.firmware_sha256 -cne $hash) { throw 'Update page does not carry this firmware.' }
+        $page = "dist/RIDDIM_ROOTS_v$version`_update.html"
+        Copy-Item (Join-Path $sdk 'build/official-web/FM1-Official-Open-Source.html') $page -Force
+        "$($web.web_sha256)  RIDDIM_ROOTS_v$version`_update.html" | Add-Content -Encoding ascii dist/SHA256SUMS.txt
+        Write-Host "Update page: $page"
+    }
     Write-Host "Firmware: $out"
     Write-Host "SHA-256:  $hash"
     Write-Host ("App image {0} bytes, runtime heap {1} bytes (minimum {2})" -f $report.app_image_bytes, $report.runtime_heap_bytes, $report.minimum_runtime_heap_bytes)

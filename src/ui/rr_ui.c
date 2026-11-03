@@ -345,7 +345,7 @@ RR_SMALL static void row_bar(int y, const char *name, unsigned v, unsigned max, 
     text(8, y, name, 1, sel ? GOLD : WHITE);
     meter(110, y - 1, 110, 9, v, max, c);
 }
-RR_SMALL static void page_body(uint32_t now)
+RR_SMALL static void page_body(void)
 {
     struct rr_engine *e = &rr.e;
     char b[32];
@@ -467,7 +467,7 @@ RR_SMALL static void draw_page(uint32_t now)
 {
     fill(0, y0, W, BAND, BLACK);
     if (rr.page == P_HOME) page_home(now);
-    else { header(rr_page_names[rr.page % RR_PAGES], now, 1); page_body(now); }
+    else { header(rr_page_names[rr.page % RR_PAGES], now, 1); page_body(); }
     if (rr.toast[0] && (int32_t)(rr.toast_until - now) > 0) {
         int w = text_w(rr.toast, 2) + 12;
         if (w > 236) w = 236;
